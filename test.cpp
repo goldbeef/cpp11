@@ -3,6 +3,7 @@
 #include <list>
 #include <set>
 #include <map>
+#include <functional>
 
 using namespace std;
 
@@ -23,6 +24,16 @@ public:
 void f(int i) {} // chose this one
 void f(const char* s) {}
 
+constexpr int GetSize() { return 3; }
+
+void print(const std::vector<int>& data, std::function<bool(int)> filter) {
+    for (auto i : data) {
+        if (filter(i))
+            std::cout << i << std::endl;
+    }
+}
+
+//testmain
 
 int main() {
     //1. 统一初始化
@@ -124,5 +135,108 @@ int main() {
         std::string name;
     };
      */
+
+    //8.禁止重写final
+    /*
+    class A {
+    public:
+        virtual void f1() final {}
+    };
+
+    class B : public A {
+        virtual void f1() {} //error
+    };
+     */
+
+    /*
+    class A final {
+    };
+
+    class B : public A { //error
+    };
+     */
+
+    //9. 显示override
+    /*
+    class A {
+    public:
+        virtual void f1() const {}
+    };
+
+    class B : public A {
+        //virtual void f1() override {} //error
+        virtual void f1() const override {} //error
+    };
+     */
+
+    //10.定义成员默认值
+    /*
+    class M {
+    public:
+        M(int i) : i(i) {
+            std::cout << "M(" << i << ")" << std::endl;
+        }
+
+        M(const M& other) : i(other.i) {
+            std::cout << "copy M(" << i << ")" << std::endl;
+        }
+
+        M& operator = (const M& other) {
+            i = other.i;
+            std::cout << "= M(" << i << ")" << std::endl;
+            return *this;
+        }
+
+    private:
+        int i;
+    };
+
+    class A {
+    public:
+        A() : m(1)
+        {}
+
+    private:
+        M m = M(2); //ignored
+    };
+
+    A a;
+     */
+
+    //11. 默认构造函数 default
+    /*
+    class A {
+    public:
+        A(int i) {}
+        A() = default;
+    };
+     */
+
+    //12. 删除构造函数 delete
+    /*
+    class A {
+    public:
+        A() = delete;
+    };
+     */
+
+    //13. 常量表达式 constexpr
+    //int b[GetSize()];
+
+    //14. 字符串字面量
+    /*
+    const char* e = R"(string e1 "\\
+    stirng e2)";                    // raw string
+    cout << e << endl;
+    */
+
+    //15. lambda表达式
+    /*
+    auto add = [](int a, int b)  { return a + b; };
+    std::cout << add(1, 2) << std::endl;
+    */
+
+    std::vector<int> v = { 5, 10, 15, 20 };
+    print(v, [](int i) { return i > 10; });     // 输出 15 20
     return 0;
 }
